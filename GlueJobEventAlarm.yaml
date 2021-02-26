@@ -10,7 +10,7 @@ GlueJobFailureEvent:
         - Glue Job State Change
       detail:
         jobName:
-          - !Ref MyGlueJob
+          - <glueHobName as string or !Ref <MyGlueJobName>
           # multiple jobs can be listed here
         state:
           - FAILED # SUCEEDED | FAILED | STARTING | STOPPING
