@@ -1,0 +1,48 @@
+# Glue's built in metrics are seemingly not at the job level but related to more low level information
+# Reference:  https://docs.aws.amazon.com/glue/latest/dg/automating-awsglue-with-cloudwatch-events.html
+GlueJobFailureEvent:
+  Type: AWS::Events::Rule
+  Properties:
+    Description: This rule detects when the Glue job's state changes to failing
+    EventPattern:
+      source:
+        - aws.glue
+      detail-type:
+        - Glue Job State Change
+      detail:
+        jobName:
+          - !Ref MyGlueJob
+          # multiple jobs can be listed here
+        state:
+          - FAILED # SUCEEDED | FAILED | STARTING | STOPPING
+    Name: !Sub
+      - ${StackName}-fail-event
+      - { StackName: !Ref "AWS::StackName" }
+    State: ENABLED
+    Targets:
+      - Arn: <SNSTopicARN> # if only the sns notification is needed otherwise this section could be omitted and rely on the alarm
+        "Id": "SNS-ID"
+        
+GlueFailureAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmDescription: >
+        Alarms if the GDPR Delete Job GlueJobFailureEvent is emitted
+      AlarmName: <alarm-name>
+      Namespace: AWS/Events
+      MetricName: TriggeredRules
+      Dimensions:
+        - Name: RuleName
+          Value: !Ref GlueJobFailureEvent
+      Statistic: Sum
+      Unit: Count
+      Period: 60
+      EvaluationPeriods: 1
+      Threshold: 1
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      AlarmActions:
+        - <SNSTopicARN>
+      TreatMissingData: notBreaching
+      
+      
+      
