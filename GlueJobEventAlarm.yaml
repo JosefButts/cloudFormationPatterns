@@ -1,3 +1,5 @@
+# This solution is to provide an event / alarm when a gluejob fails by watching for a state change
+# in the glue job into the failing state
 # Reference:  https://docs.aws.amazon.com/glue/latest/dg/automating-awsglue-with-cloudwatch-events.html
 GlueJobFailureEvent:
   Type: AWS::Events::Rule
@@ -35,7 +37,7 @@ GlueFailureAlarm:
           Value: !Ref GlueJobFailureEvent
       Statistic: Sum
       Unit: Count
-      Period: 60
+      Period: 60 # seconds
       EvaluationPeriods: 1
       Threshold: 1
       ComparisonOperator: GreaterThanOrEqualToThreshold
