@@ -1,4 +1,3 @@
-# Glue's built in metrics are seemingly not at the job level but related to more low level information
 # Reference:  https://docs.aws.amazon.com/glue/latest/dg/automating-awsglue-with-cloudwatch-events.html
 GlueJobFailureEvent:
   Type: AWS::Events::Rule
